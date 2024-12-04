@@ -36,3 +36,9 @@ Aplikacja webowa używana w centrali firmy, pozwalająca na zmianę żądań zmi
 
 #### **WIZ** - moduł wizualizacji biznesowej
 Uzyskanie dowolną metodą wizualizacji procesów biznesowych zachodzących w firmie.
+
+#### **RAP** - moduł raportowy
+Agregacja danych i przygotowanie gotowych do użycia (np. w MS Excel) plików raportów.
+
+#### **LOG** - dzienniki pracy systemu
+Endpoint dla pozostałych części systemu, pozwalający wysyłać i gromadzić w jednym miejscu wszystkie aktywności (również nieudane). Aplikacja webowa do przeglądania historii.
