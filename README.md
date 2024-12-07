@@ -34,11 +34,9 @@ Wyłącznie backend, działający wyłącznie z zarejestrowanym kodem API, z end
 #### **AOS** - aplikacja obsługi sprzedaży
 Aplikacja webowa używana w centrali firmy, pozwalająca na zmianę żądań zmiany rezerwacji na sprzedaż, oraz sprzedaży na wysyłkę.
 
-#### **WIZ** - moduł wizualizacji biznesowej
-Uzyskanie dowolną metodą wizualizacji procesów biznesowych zachodzących w firmie.
-
-#### **RAP** - moduł raportowy
+#### **RAP** - moduł raportów i wizualizacji biznesowej
 Agregacja danych i przygotowanie gotowych do użycia (np. w MS Excel) plików raportów.
+Uzyskanie dowolną metodą wizualizacji procesów biznesowych zachodzących w firmie.
 
 #### **LOG** - dzienniki pracy systemu
 Endpoint dla pozostałych części systemu, pozwalający wysyłać i gromadzić w jednym miejscu wszystkie aktywności (również nieudane). Aplikacja webowa do przeglądania historii.
