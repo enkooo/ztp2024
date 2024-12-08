@@ -40,3 +40,47 @@ Uzyskanie dowolną metodą wizualizacji procesów biznesowych zachodzących w fi
 
 #### **LOG** - dzienniki pracy systemu
 Endpoint dla pozostałych części systemu, pozwalający wysyłać i gromadzić w jednym miejscu wszystkie aktywności (również nieudane). Aplikacja webowa do przeglądania historii.
+
+## Pobranie/aktualizacja projektu
+
+Pobranie ostatniej wersji do nowego katalogu ``ztp2024``
+```
+git clone https://gitlab.com/mariusz.jarocki/ztp2024.git
+```
+Aktualizacja posiadanego kodu do ostatniej wersji
+```
+cd ztp2024
+git reset
+git pull
+```
+
+## Instalacja zależności
+```
+npm install
+cd frontend
+npm install
+```
+
+## Dostosowanie do własnego środowiska bazodanowego
+
+Skopiować plik ``config-example.json`` do ``config.json`` i dostosować jego treść do własnej konfiguracji.
+
+## Uruchomienie backendu
+
+```
+npm start
+```
+Backend będzie dostępny pod adresem http://localhost:5000 , gdzie ``5000`` jest portem ustawiony w ``config.json``.
+
+## Kompilacja frontendu do wersji produkcyjnej
+```
+cd frontend
+npm run build
+```
+
+## Uruchomienie serwera frontendu developerskiego
+```
+cd frontend
+npm run dev
+```
+Serwer będzie dostępny pod adresem http://localhost:5173 , port ten może być wyższy, jeżeli coś na ``5173`` już pracuje.

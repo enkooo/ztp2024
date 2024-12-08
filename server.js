@@ -22,16 +22,17 @@ app.use(express.static(config.frontend))
 
 let pgClient = null
 const api = '/api/'
+const goodsSuffix = 'goods'
 
-app.get(api + ':table', (req, res) => {
-    const selection = `WHERE ${req.params.table}::text ILIKE`
-    pgClient.query(`SELECT COUNT(*) FROM ${req.params.table} ${selection} $1`, [ `%${req.query.search || ''}%` ], (err, data) => {
+app.get(api + goodsSuffix, (req, res) => {
+    const selection = `WHERE goods::text ILIKE`
+    pgClient.query(`SELECT COUNT(*) FROM goods ${selection} $1`, [ `%${req.query.search || ''}%` ], (err, data) => {
         if(err) {
             res.status(400).json({ error: err.message })
             return
         }
         const total = parseInt(data.rows[0].count)
-        let query = `SELECT * FROM ${req.params.table}`
+        let query = `SELECT * FROM goods`
         const parameters = [ req.query.offset, req.query.limit ]
         if(req.query.search) {
             query += ` ${selection} $3`
@@ -39,6 +40,8 @@ app.get(api + ':table', (req, res) => {
         }
         if(req.query.sort && ['ASC', 'DESC'].includes(req.query.order.toUpperCase())) {
             query += ` ORDER BY ${req.query.sort} ${req.query.order}`
+        } else {
+            query += ' ORDER BY id'
         }
         query += ' OFFSET $1 LIMIT $2'
         pgClient.query(query, parameters, (err, data) => {
@@ -48,6 +51,39 @@ app.get(api + ':table', (req, res) => {
                 res.json({ total, data: data.rows })
             }
         })
+    })
+})
+
+app.post(api + goodsSuffix, (req, res) => {
+    const parameters = [ req.body.name, req.body.serial ]
+    pgClient.query('INSERT INTO goods (name,serial) VALUES ($1,$2) RETURNING *', parameters, (err, data) => {
+        if(err) {
+            res.status(400).json({ error: err.message })
+        } else {
+            res.json(data.rows[0])
+        }
+    })
+})
+
+app.put(api + goodsSuffix, (req, res) => {
+    const parameters = [ req.body.name, req.body.serial, req.body.id ]
+    pgClient.query('UPDATE goods SET name=$1,serial=$2 WHERE id=$3 RETURNING *', parameters, (err, data) => {
+        if(err) {
+            res.status(400).json({ error: err.message })
+        } else {
+            res.json(data.rows[0])
+        }
+    })
+})
+
+app.delete(api + goodsSuffix, (req, res) => {
+    const parameters = [ req.query.id ]
+    pgClient.query('DELETE FROM goods WHERE id=$1 RETURNING *', parameters, (err, data) => {
+        if(err) {
+            res.status(400).json({ error: err.message })
+        } else {
+            res.json(data.rows[0])
+        }
     })
 })
 

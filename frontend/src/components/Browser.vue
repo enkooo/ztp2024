@@ -1,22 +1,26 @@
 <script>
 
-const api = '/api/merchants'
+import Editor from './Editor.vue'
+
+const api = '/api/goods'
 
 export default {
+    components: { Editor },
+    emits: [ 'alert' ],
     data: () => ({
         itemsPerPage: 5,
         headers: [
-            { title: 'NIP', key: 'nip', align: 'start', sortable: true },
-            { title: 'Company', key: 'company', align: 'start', sortable: true },
-            { title: 'Address', key: 'address', align: 'start' },
-            { title: 'Phone', key: 'phone', align: 'end' },
-            { title: 'Email', key: 'email', align: 'start' },
-            { title: 'Registered', key: 'registration', align: 'end' }
+            { title: 'Id', key: 'id', align: 'end', sortable: false },
+            { title: 'Name', key: 'name', align: 'start', sortable: true },
+            { title: 'S/N', key: 'serial', align: 'start', sortable: true }
         ],
         serverItems: [],
         loading: true,
         totalItems: 0,
-        search: ''
+        search: '',
+        tableKey: 0,
+        editor: false,
+        item: {}
     }),
     methods: {
         loadItems({ page, itemsPerPage, sortBy }) {
@@ -30,17 +34,78 @@ export default {
             fetch(api + '?' + 
               new URLSearchParams(queryString).toString())
             .then(res => res.json().then(body => {
-                body.data.forEach((element, index, arr) => {
-                    arr[index].phone = element.phone.replace(/\s/g, '')
-                    arr[index].registration = element.registration.substring(0, 10)
-                });
                 this.serverItems = body.data
                 this.totalItems = body.total
                 this.loading = false
             }))
         },
         clickItem(item, event) {
-            alert(event.item.nip)
+            Object.assign(this.item, event.item)
+            this.editor = true
+        },
+        clickInsert() {
+            this.item = {}
+            this.editor = true
+        },
+        editorClose(action) {
+            this.editor = false
+            switch(action) {
+
+                case 'insert':
+                fetch(api, {
+                    method: 'POST',
+                    headers: { 'Content-type': 'application/json' },
+                    body: JSON.stringify(this.item)
+                    }).then(res => {
+                        res.json().then(data => {
+                            if(!res.ok) {
+                                this.$emit('alert', data.error, 'error')
+                            } else {
+                                this.tableKey++
+                                this.$emit('alert', 'Inserted successfully')
+                            }
+                        }).catch(err => {
+                            this.$emit('alert', 'Not inserted', 'error')
+                        })
+                    })
+                    break
+
+                case 'update':
+                fetch(api, {
+                    method: 'PUT',
+                    headers: { 'Content-type': 'application/json' },
+                    body: JSON.stringify(this.item)
+                    }).then(res => {
+                        res.json().then(data => {
+                            if(!res.ok) {
+                                this.$emit('alert', data.error, 'error')
+                            } else {
+                                this.tableKey++
+                                this.$emit('alert', 'Updated successfully')
+                            }
+                        }).catch(err => {
+                            this.$emit('alert', 'Not updated', 'error')
+                        })
+                    })
+                    break
+
+                case 'delete':
+                fetch(api + '?' + new URLSearchParams({ id: this.item.id }).toString(), {
+                    method: 'DELETE'
+                    }).then(res => {
+                        res.json().then(data => {
+                            if(!res.ok) {
+                                this.$emit('alert', data.error, 'error')
+                            } else {
+                                this.tableKey++
+                                this.$emit('alert', 'Deleted successfully')
+                            }
+                        }).catch(err => {
+                            this.$emit('alert', 'Not deleted', 'error')
+                        })
+                    })
+                    break
+            }
         }
     }
 }
@@ -48,22 +113,23 @@ export default {
 
 <template>
     <v-card variant="outlined">
-        <v-card-title>Data</v-card-title>
+        <v-card-title>Goods</v-card-title>
         <v-card-text>
             <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems"
                 :items-length="totalItems" :loading="loading" :search="search"
-                @update:options="loadItems" @click:row="clickItem">
-                <template v-slot:tfoot>
-                    <tr>
-                        <td colspan="2">
-                            <v-text-field v-model="search" class="ma-2" variant="outlined" density="compact" placeholder="search..."
-                                hide-details></v-text-field>
-                        </td>
-                    </tr>
+                @update:options="loadItems" @click:row="clickItem" :key="tableKey">
+                <template #footer.prepend>
+                    <v-btn class="mr-12" variant="elevated" @click="clickInsert"><v-icon>mdi-table-plus</v-icon></v-btn>
+                    <v-text-field v-model="search" class="mr-5" variant="outlined" density="compact" placeholder="search..."
+                        hide-details prepend-icon="mdi-magnify"></v-text-field>
                 </template>
             </v-data-table-server>
         </v-card-text>
     </v-card>
+
+    <v-dialog v-model="editor" width="50%" ref="editor">
+        <Editor :item="item" @close="editorClose"/>
+    </v-dialog>
 </template>
 
 <style scoped>
