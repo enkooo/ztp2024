@@ -44,7 +44,11 @@ export default {
             this.editor = true
         },
         clickInsert() {
-            this.item = {}
+            Object.assign(this.item, {
+                id: null,
+                name: '',
+                serial: ''
+            })
             this.editor = true
         },
         editorClose(action) {

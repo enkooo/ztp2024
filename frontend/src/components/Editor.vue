@@ -19,12 +19,6 @@
             close(action) {
                 this.$emit('close', action)
             }  
-        },
-        mounted() {
-            if(!this.item.id) {
-                this.item.name = ''
-                this.item.serial = ''
-            }
         }
     }
 </script>
