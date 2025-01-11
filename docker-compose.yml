@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: custom-postgres
+    container_name: postgres17_container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
+
+volumes:
+  postgres_data:

@@ -26,3 +26,10 @@ COMMENT ON COLUMN public.request.status
 1 - wniosek procesowany
 2 - wniosek rozpatrzony pozytywnie
 3 - wniosek odrzucony';
+
+
+
+-- ALTER TABLE request ADD CONSTRAINT unique_nip UNIQUE (nip);
+
+-- ALTER TABLE request ADD CONSTRAINT unique_email UNIQUE (email);
+
