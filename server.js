@@ -33,7 +33,7 @@ app.get(api + goodsSuffix, (req, res) => {
         }
         const total = parseInt(data.rows[0].count)
         let query = `SELECT * FROM goods`
-        const parameters = [ req.query.offset, req.query.limit ]
+        const parameters = [ req.query.offset, req.query.limit <= 0 ? 1000000 : req.query.limit ]
         if(req.query.search) {
             query += ` ${selection} $3`
             parameters.push(`%${req.query.search}%`)
