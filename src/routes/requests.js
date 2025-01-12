@@ -5,7 +5,7 @@ const router = express.Router();
 router.post("/", (req, res) => {
   const { nip, name, email, phone, address } = req.body;
 
-  if (!nip || !/^\d{10}$/.test(nip)) {
+  if (!nip || !/^\d{12}$/.test(nip)) {
     res.status(400).json({ error: "Invalid NIP format" });
     return;
   }
